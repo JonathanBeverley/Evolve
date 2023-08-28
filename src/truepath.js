@@ -4386,8 +4386,14 @@ function drawShips(){
     let list = $('#shipList');
 
     if (global.space.shipyard.sort){
-        let rerank = {spc_dwarf: 'a'};
-        global.space.shipyard.ships = global.space.shipyard.ships.sort((a, b) => (rerank[a.location] ? rerank[a.location] : a.location).localeCompare((rerank[b.location] ? rerank[b.location] : b.location)));
+        global.space.shipyard.ships = global.space.shipyard.ships.sort(function(a, b) {
+            let r = spacePlanetStats[a.location].dist - spacePlanetStats[b.location].dist;
+            if (r) return r;
+            r = shipAttackPower(b) - shipAttackPower(a);
+            if (r) return r;
+            r = sensorRange(b) - sensorRange(a);
+            return r;
+        });
     }
 
     const spaceRegions = spaceTech();
